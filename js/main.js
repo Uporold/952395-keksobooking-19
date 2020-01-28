@@ -28,11 +28,7 @@ var getRandomIntLimited = function (min, max) {
 };
 
 var getUniqueAvatar = function (array) {
-  for (var i = 0; i < 1; i++) {
-    var id = array[i];
-    array.splice(i, 1);
-  }
-  return id;
+  return array.shift();
 };
 
 var generateRandomAd = function () {
@@ -42,7 +38,7 @@ var generateRandomAd = function () {
     },
     offer: {
       title: TITLES[getRandomItem(TITLES)],
-      address: '600, 350',
+      address: location.x + ', ' + location.y,
       price: PRICES[getRandomItem(PRICES)],
       type: TYPES[getRandomItem(TYPES)],
       rooms: ROOMS[getRandomItem(ROOMS)],
@@ -54,7 +50,7 @@ var generateRandomAd = function () {
       photos: PHOTOS[getRandomItem(PHOTOS)]
     },
     location: {
-      x: getRandomIntLimited(100, pinsBlock.clientWidth - 100),
+      x: getRandomIntLimited(25, pinsBlock.clientWidth - 25),
       y: getRandomIntLimited(130, 630)
     }
   };
@@ -78,7 +74,6 @@ var renderPin = function (ad) {
   pinElement.style = 'left: ' + ad.location.x + 'px; top: ' + ad.location.y + 'px';
   pinElement.querySelector('img').src = ad.author.avatar;
   pinElement.querySelector('img').alt = ad.offer.title;
-
   return pinElement;
 };
 
