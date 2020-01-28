@@ -32,6 +32,10 @@ var getUniqueAvatar = function (array) {
 };
 
 var generateRandomAd = function () {
+  var location = {
+    x: getRandomIntLimited(25, pinsBlock.clientWidth - 25),
+    y: getRandomIntLimited(130, 630)
+  };
   return {
     author: {
       avatar: 'img/avatars/user' + getUniqueAvatar(AVATAR_IMG_IDS) + '.png',
@@ -49,10 +53,7 @@ var generateRandomAd = function () {
       description: DESCRIPTIONS[getRandomItem(DESCRIPTIONS)],
       photos: PHOTOS[getRandomItem(PHOTOS)]
     },
-    location: {
-      x: getRandomIntLimited(25, pinsBlock.clientWidth - 25),
-      y: getRandomIntLimited(130, 630)
-    }
+    location: location
   };
 };
 
