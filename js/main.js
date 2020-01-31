@@ -165,38 +165,31 @@ var cardTemplate = document.querySelector('#card')
 var renderCard = function (ad) {
   var cardElement = cardTemplate.cloneNode(true);
 
-  var createContent = function (className, doubleData, data1, data2) {
-    if (data1 && !doubleData) {
-      cardElement.querySelector(className).textContent = data1;
-      if (data1 === ad.offer.price) {
-        cardElement.querySelector(className).textContent = data1 + '₽/ночь';
-      }
-      if (data1 === ad.author.avatar) {
-        cardElement.querySelector(className).textContent = '';
-        cardElement.querySelector(className).src = data1;
-      }
-    } else if (data1 && data2) {
-      if (data2 === ad.offer.guests && data1 === ad.offer.rooms) {
-        cardElement.querySelector(className).textContent = data1 + ' ' + roomsTransformWords(data1) + ' для ' + data2 + ' ' + guestsTransformWords(data2);
-      }
-      if (data2 === ad.offer.checkouts && data1 === ad.offer.checkin) {
-        cardElement.querySelector(className).textContent = 'Заезд после ' + data1 + ' выезд до ' + data2;
+  var createContent = function (className, data) {
+    var element = cardElement.querySelector(className);
+    if (data) {
+      if (data === ad.author.avatar) {
+        element.src = data;
+      } else {
+        element.textContent = data;
       }
     } else {
-      cardElement.querySelector(className).remove();
+      element.remove();
     }
   };
 
-  createContent('.popup__title', false, ad.offer.title);
-  createContent('.popup__text--address', false, ad.offer.address);
-  createContent('.popup__text--price', false, ad.offer.price);
-  createContent('.popup__type', false, typeTranslate(ad.offer.type));
-  createContent('.popup__text--capacity', true, ad.offer.rooms, ad.offer.guests);
-  createContent('.popup__text--time', true, ad.offer.checkin, ad.offer.checkouts);
+  createContent('.popup__title', ad.offer.title);
+  createContent('.popup__text--address', ad.offer.address);
+  createContent('.popup__text--price', ad.offer.price + '₽/ночь');
+  createContent('.popup__type', typeTranslate(ad.offer.type));
+  createContent('.popup__text--capacity',
+      ad.offer.rooms + ' ' + roomsTransformWords(ad.offer.rooms) + ' для ' + ad.offer.guests + ' ' + guestsTransformWords(ad.offer.guests));
+  createContent('.popup__text--time',
+      'Заезд после ' + ad.offer.checkin + ' выезд до ' + ad.offer.checkouts);
   renderFeatures(cardElement, ad.offer.features);
-  createContent('.popup__description', false, ad.offer.description);
+  createContent('.popup__description', ad.offer.description);
   renderPhotos(cardElement, ad.offer.photos);
-  createContent('.popup__avatar', false, ad.author.avatar);
+  createContent('.popup__avatar', ad.author.avatar);
 
   return cardElement;
 };
