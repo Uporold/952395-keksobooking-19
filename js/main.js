@@ -286,14 +286,7 @@ var price = notice.querySelector('#price');
 var type = notice.querySelector('#type');
 
 var checkTime = function (evt, time) {
-  var target = evt.target.value;
-  if (target === '12:00') {
-    time.value = target;
-  } else if (target === '13:00') {
-    time.value = target;
-  } else if (target === '14:00') {
-    time.value = target;
-  }
+  time.value = evt.target.value;
 };
 
 var getMinPriceOfType = function (evt) {
