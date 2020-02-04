@@ -290,29 +290,9 @@ var checkTime = function (evt, time) {
 };
 
 var getMinPriceOfType = function (evt) {
-  var MinPrice = {
-    bungalo: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
-  };
-  var target = evt.target.value;
-  if (target === 'bungalo') {
-    price.placeholder = MinPrice[target];
-    price.min = MinPrice[target];
-  }
-  if (target === 'flat') {
-    price.placeholder = MinPrice[target];
-    price.min = MinPrice[target];
-  }
-  if (target === 'house') {
-    price.placeholder = MinPrice[target];
-    price.min = MinPrice[target];
-  }
-  if (target === 'palace') {
-    price.placeholder = MinPrice[target];
-    price.min = MinPrice[target];
-  }
+  var MinPrice = {bungalo: 0, flat: 1000, house: 5000, palace: 10000};
+  price.placeholder = MinPrice[evt.target.value];
+  price.min = MinPrice[evt.target.value];
 };
 
 timeIn.addEventListener('change', function (evt) {
