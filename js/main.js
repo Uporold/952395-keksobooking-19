@@ -15,6 +15,7 @@ var DESCRIPTIONS = ['Описание 1', 'Описание 2', 'Описани�
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
 var ESC_KEY = 'Escape';
+var ENTER_KEY = 'Enter';
 var LEFT_BUTTON_MOUSE_KEY = 0;
 
 var OBJECTS_AMOUNT = 8;
@@ -103,8 +104,11 @@ var renderPin = function (ad, id) {
   pinElement.style = 'left: ' + ad.location.x + 'px; top: ' + ad.location.y + 'px';
   pinElement.querySelector('img').src = ad.author.avatar;
   pinElement.querySelector('img').alt = ad.offer.title;
+  pinElement.dataset.id = id;
   pinElement.querySelector('img').dataset.id = id;
+
   pinElement.addEventListener('click', onShowAd);
+  pinElement.addEventListener('keydown', onEnterOpenCard);
 
   return pinElement;
 };
@@ -198,6 +202,7 @@ var renderCard = function (ad) {
   createContent('.popup__avatar', ad.author.avatar);
 
   cardElement.querySelector('.popup__close').addEventListener('click', onMouseButtonCloseCard);
+  cardElement.querySelector('.popup__close').addEventListener('keydown', onEnterCloseCard);
   document.addEventListener('keydown', onEscCloseCard);
 
   return cardElement;
@@ -225,7 +230,6 @@ var renderCards = function (id) {
 var notice = document.querySelector('.notice');
 var adFormElementList = notice.querySelectorAll('.ad-form__element');
 var adForm = notice.querySelector('.ad-form');
-var ENTER_KEY = 'Enter';
 var pin = {
   height: 62,
   width: 62
@@ -250,7 +254,7 @@ var getPinMainCoordinates = function () {
     return parseInt(value, 10);
   };
   var y = getIntCoordinates(mapPinMain.style.top) + pin.height + pinAfter.height;
-  var x = getIntCoordinates(mapPinMain.style.left) + pin.width / 2 + pinAfter.width / 2;
+  var x = getIntCoordinates(mapPinMain.style.left) + pin.width / 2;
   addressInput.value = x + ', ' + y;
 };
 
@@ -284,11 +288,11 @@ var type = notice.querySelector('#type');
 var checkTime = function (evt, time) {
   var target = evt.target.value;
   if (target === '12:00') {
-    time.value = '12:00';
+    time.value = target;
   } else if (target === '13:00') {
-    time.value = '13:00';
+    time.value = target;
   } else if (target === '14:00') {
-    time.value = '14:00';
+    time.value = target;
   }
 };
 
@@ -332,23 +336,10 @@ type.addEventListener('change', function (evt) {
 
 var getCapacityFromRoomsNumber = function (evt) {
   var target = evt.target.value;
-
   for (var i = 0; i < capacity.length; i++) {
-    if (target === '100') {
-      if (capacity.options[i].value === '0') {
-        capacity.options[i].disabled = false;
-        capacity.options[i].selected = true;
-      } else {
-        capacity.options[i].disabled = true;
-      }
-    } else {
-      if (target >= capacity.options[i].value && capacity.options[i].value !== '0') {
-        capacity.options[i].disabled = false;
-      } else {
-        capacity.options[i].disabled = true;
-        capacity.options[i].selected = false;
-      }
-    }
+    var item = capacity.options[i];
+    item.disabled = target === '100' ? item.value !== '0' : item.value > target || item.value === '0';
+    item.selected = item.value === target || (item.value === '0' && target === '100');
   }
 };
 
@@ -356,10 +347,15 @@ roomNumber.addEventListener('change', function (evt) {
   getCapacityFromRoomsNumber(evt);
 });
 
-
 var onShowAd = function (evt) {
   var adId = evt.target.dataset.id;
   renderCards(adId);
+};
+
+var onEnterOpenCard = function (evt) {
+  if (evt.key === ENTER_KEY) {
+    onShowAd(evt);
+  }
 };
 
 var closeCard = function () {
@@ -377,3 +373,10 @@ var onMouseButtonCloseCard = function (evt) {
     closeCard();
   }
 };
+
+var onEnterCloseCard = function (evt) {
+  if (evt.key === ENTER_KEY) {
+    closeCard();
+  }
+};
+
