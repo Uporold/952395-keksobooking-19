@@ -107,7 +107,7 @@ var renderPin = function (ad, id) {
   pinElement.dataset.id = id;
   pinElement.querySelector('img').dataset.id = id;
 
-  pinElement.addEventListener('click', onShowAd);
+  pinElement.addEventListener('click', onPinShowCard);
   pinElement.addEventListener('keydown', onEnterOpenCard);
 
   return pinElement;
@@ -267,7 +267,7 @@ var activateMap = function () {
 };
 
 mapPinMain.addEventListener('mousedown', function (evt) {
-  if (evt.button === 0) {
+  if (evt.button === LEFT_BUTTON_MOUSE_KEY) {
     activateMap();
   }
 });
@@ -290,9 +290,9 @@ var checkTime = function (evt, time) {
 };
 
 var getMinPriceOfType = function (evt) {
-  var MinPrice = {bungalo: 0, flat: 1000, house: 5000, palace: 10000};
-  price.placeholder = MinPrice[evt.target.value];
-  price.min = MinPrice[evt.target.value];
+  var minPrice = {bungalo: 0, flat: 1000, house: 5000, palace: 10000};
+  price.placeholder = minPrice[evt.target.value];
+  price.min = minPrice[evt.target.value];
 };
 
 timeIn.addEventListener('change', function (evt) {
@@ -320,14 +320,14 @@ roomNumber.addEventListener('change', function (evt) {
   getCapacityFromRoomsNumber(evt);
 });
 
-var onShowAd = function (evt) {
+var onPinShowCard = function (evt) {
   var adId = evt.target.dataset.id;
   renderCards(adId);
 };
 
 var onEnterOpenCard = function (evt) {
   if (evt.key === ENTER_KEY) {
-    onShowAd(evt);
+    onPinShowCard(evt);
   }
 };
 
