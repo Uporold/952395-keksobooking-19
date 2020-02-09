@@ -3,7 +3,6 @@
   var notice = document.querySelector('.notice');
   var adFormElementList = notice.querySelectorAll('.ad-form__element');
 
-
   var controlAdForm = function (option) {
     for (var i = 0; i < adFormElementList.length; ++i) {
       var item = adFormElementList[i];

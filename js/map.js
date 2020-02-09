@@ -2,22 +2,28 @@
 (function () {
   var ESC_KEY = 'Escape';
   var ENTER_KEY = 'Enter';
-  var LEFT_BUTTON_MOUSE_KEY = 0;
 
   var mapMain = document.querySelector('.map');
   var mapPinMain = mapMain.querySelector('.map__pin--main');
+  var addressInput = document.querySelector('#address');
+  var notice = document.querySelector('.notice');
+  var adForm = notice.querySelector('.ad-form');
 
   window.map = {
     pinAfter: {
       height: 22,
       width: 10
     },
+    pin: {
+      height: 64,
+      width: 64
+    },
     getPinMainCoordinates: function () {
       var getIntCoordinates = function (value) {
         return parseInt(value, 10);
       };
-      var y = getIntCoordinates(mapPinMain.style.top) + pin.height + window.map.pinAfter.height;
-      var x = getIntCoordinates(mapPinMain.style.left) + pin.width / 2;
+      var y = getIntCoordinates(mapPinMain.style.top) + window.map.pin.height + window.map.pinAfter.height;
+      var x = getIntCoordinates(mapPinMain.style.left) + window.map.pin.width / 2;
       addressInput.value = x + ', ' + y;
     },
 
@@ -28,7 +34,7 @@
 
     onEnterOpenCard: function (evt) {
       if (evt.key === ENTER_KEY) {
-        this.onPinShowCard(evt);
+        window.map.onPinShowCard(evt);
       }
     },
 
@@ -39,7 +45,7 @@
     },
 
     onMouseButtonCloseCard: function (evt) {
-      if (evt.button === LEFT_BUTTON_MOUSE_KEY) {
+      if (evt.button === window.map.LEFT_BUTTON_MOUSE_KEY) {
         closeCard();
       }
     },
@@ -50,7 +56,17 @@
       }
     },
     mapMain: mapMain,
-    mapPinMain: mapPinMain
+    mapPinMain: mapPinMain,
+    activated: false,
+    LEFT_BUTTON_MOUSE_KEY: 0,
+    activateMap: function () {
+      window.map.activated = true;
+      mapMain.classList.remove('map--faded');
+      adForm.classList.remove('ad-form--disabled');
+      renderPins();
+      window.controlAdForm(false);
+      window.map.getPinMainCoordinates();
+    }
   };
 
   var renderPins = function () {
@@ -72,38 +88,13 @@
     mapMain.insertBefore(fragment, mapFiltersContainer);
   };
 
-  var pin = {
-    height: 64,
-    width: 64
-  };
-
-  var notice = document.querySelector('.notice');
-  var adForm = notice.querySelector('.ad-form');
-  var addressInput = document.querySelector('#address');
-
-  var activateMap = function () {
-    mapMain.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
-    window.controlAdForm(false);
-    window.map.getPinMainCoordinates();
-    renderPins();
-  };
-
-  mapPinMain.addEventListener('mousedown', function (evt) {
-    if (evt.button === LEFT_BUTTON_MOUSE_KEY) {
-      activateMap();
-    }
-  });
-
   mapPinMain.addEventListener('keydown', function (evt) {
-    if (evt.key === ENTER_KEY) {
-      activateMap();
+    if (evt.key === ENTER_KEY && window.map.activated === false) {
+      window.map.activateMap();
     }
   });
 
   var closeCard = function () {
     document.querySelector('.map__card').remove();
   };
-
-
 })();

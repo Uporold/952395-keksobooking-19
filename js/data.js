@@ -11,8 +11,14 @@
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var DESCRIPTIONS = ['Описание 1', 'Описание 2', 'Описание 3', 'Описание 4', 'Описание 5'];
   var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+
   var OBJECTS_AMOUNT = 8;
+
   var pinsBlock = document.querySelector('.map__pins');
+  var offerPins = {
+    height: 68,
+    width: 50
+  };
 
   var ads = [];
   window.ads = ads;
@@ -48,7 +54,7 @@
   var generateRandomAd = function () {
     var location = {
       x: getRandomIntLimited(25, pinsBlock.clientWidth - 25),
-      y: getRandomIntLimited(130, 630)
+      y: getRandomIntLimited(130 - offerPins.height, 630 - offerPins.height)
     };
     return {
       author: {
