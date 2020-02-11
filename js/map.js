@@ -10,6 +10,10 @@
   var adForm = notice.querySelector('.ad-form');
 
   window.map = {
+    mapMain: mapMain,
+    mapPinMain: mapPinMain,
+    activated: false,
+    LEFT_BUTTON_MOUSE_KEY: 0,
     pinAfter: {
       height: 22,
       width: 10
@@ -29,7 +33,7 @@
 
     onPinShowCard: function (evt) {
       var adId = evt.target.dataset.id;
-      renderCards(adId);
+      window.renderCards(adId);
     },
 
     onEnterOpenCard: function (evt) {
@@ -55,37 +59,39 @@
         closeCard();
       }
     },
-    mapMain: mapMain,
-    mapPinMain: mapPinMain,
-    activated: false,
-    LEFT_BUTTON_MOUSE_KEY: 0,
     activateMap: function () {
       window.map.activated = true;
       mapMain.classList.remove('map--faded');
       adForm.classList.remove('ad-form--disabled');
-      renderPins();
+      window.backend.load(successHandler, errorHandler);
       window.controlAdForm(false);
       window.map.getPinMainCoordinates();
     }
   };
-
-  var renderPins = function () {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.ads.length; i++) {
-      fragment.appendChild(window.renderPin(window.ads[i], i));
-    }
-    document.querySelector('.map__pins').appendChild(fragment);
-  };
-
   var mapFiltersContainer = document.querySelector('.map__filters-container');
 
-  var renderCards = function (id) {
-    if (document.querySelector('.map__card')) {
-      document.querySelector('.map__card').remove();
-    }
+  var successHandler = function (ads) {
     var fragment = document.createDocumentFragment();
-    fragment.appendChild(window.renderCard(window.ads[id]));
-    mapMain.insertBefore(fragment, mapFiltersContainer);
+    for (var i = 0; i < ads.length; i++) {
+      fragment.appendChild(window.renderPin(ads[i], i));
+    }
+    document.querySelector('.map__pins').appendChild(fragment);
+
+    window.renderCards = function (id) {
+      if (document.querySelector('.map__card')) {
+        document.querySelector('.map__card').remove();
+      }
+      var cardsFragment = document.createDocumentFragment();
+      cardsFragment.appendChild(window.renderCard(ads[id]));
+      mapMain.insertBefore(cardsFragment, mapFiltersContainer);
+    };
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; text-align: center; background-color: red; position: sticky; top: 0; font-size: 30px;';
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
   };
 
   mapPinMain.addEventListener('keydown', function (evt) {
