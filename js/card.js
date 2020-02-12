@@ -11,20 +11,22 @@
   };
 
   var convertTextForms = function (n, textForms) {
-    n = n % 10;
     if (n > 1 && n < 5) {
       return textForms[1];
+    }
+    if (n >= 5 || n === 0) {
+      return textForms[2];
     }
     return textForms[0];
   };
 
   var roomsTransformWords = function (num) {
-    var words = ['комната', 'комнаты'];
+    var words = ['комната', 'комнаты', 'комнат'];
     return convertTextForms(num, words);
   };
 
   var guestsTransformWords = function (num) {
-    var words = ['гостя', 'гостей'];
+    var words = ['гостя', 'гостей', 'гостей'];
     return convertTextForms(num, words);
   };
 
@@ -72,14 +74,11 @@
   window.renderCard = function (ad) {
     var cardElement = cardTemplate.cloneNode(true);
 
-    var createContent = function (className, data) {
+    var createContent = function (className, data, property) {
       var element = cardElement.querySelector(className);
+      property = property || 'textContent';
       if (data) {
-        if (data === ad.author.avatar) {
-          element.src = data;
-        } else {
-          element.textContent = data;
-        }
+        element[property] = data;
       } else {
         element.remove();
       }
@@ -92,11 +91,11 @@
     createContent('.popup__text--capacity',
         ad.offer.rooms + ' ' + roomsTransformWords(ad.offer.rooms) + ' для ' + ad.offer.guests + ' ' + guestsTransformWords(ad.offer.guests));
     createContent('.popup__text--time',
-        'Заезд после ' + ad.offer.checkin + ' выезд до ' + ad.offer.checkouts);
+        'Заезд после ' + ad.offer.checkin + ' выезд до ' + ad.offer.checkout);
     renderFeatures(cardElement, ad.offer.features);
     createContent('.popup__description', ad.offer.description);
     renderPhotos(cardElement, ad.offer.photos);
-    createContent('.popup__avatar', ad.author.avatar);
+    createContent('.popup__avatar', ad.author.avatar, 'src');
 
     cardElement.querySelector('.popup__close').addEventListener('click', window.map.onMouseButtonCloseCard);
     cardElement.querySelector('.popup__close').addEventListener('keydown', window.map.onEnterCloseCard);
