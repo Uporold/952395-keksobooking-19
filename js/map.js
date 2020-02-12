@@ -8,6 +8,7 @@
   var addressInput = document.querySelector('#address');
   var notice = document.querySelector('.notice');
   var adForm = notice.querySelector('.ad-form');
+  var data = [];
 
   window.map = {
     mapMain: mapMain,
@@ -33,7 +34,7 @@
 
     onPinShowCard: function (evt) {
       var adId = evt.target.dataset.id;
-      window.renderCards(adId);
+      renderCards(adId);
     },
 
     onEnterOpenCard: function (evt) {
@@ -74,17 +75,18 @@
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < ads.length; i++) {
       fragment.appendChild(window.renderPin(ads[i], i));
+      data.push(ads[i]);
     }
     document.querySelector('.map__pins').appendChild(fragment);
+  };
 
-    window.renderCards = function (id) {
-      if (document.querySelector('.map__card')) {
-        document.querySelector('.map__card').remove();
-      }
-      var cardsFragment = document.createDocumentFragment();
-      cardsFragment.appendChild(window.renderCard(ads[id]));
-      mapMain.insertBefore(cardsFragment, mapFiltersContainer);
-    };
+  var renderCards = function (id) {
+    if (document.querySelector('.map__card')) {
+      document.querySelector('.map__card').remove();
+    }
+    var cardsFragment = document.createDocumentFragment();
+    cardsFragment.appendChild(window.renderCard(data[id]));
+    mapMain.insertBefore(cardsFragment, mapFiltersContainer);
   };
 
   var errorHandler = function (errorMessage) {
