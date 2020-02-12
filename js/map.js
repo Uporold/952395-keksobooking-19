@@ -75,7 +75,7 @@
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < ads.length; i++) {
       fragment.appendChild(window.renderPin(ads[i], i));
-      data.push(ads[i]);
+      data = ads;
     }
     document.querySelector('.map__pins').appendChild(fragment);
   };

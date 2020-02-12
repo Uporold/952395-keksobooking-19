@@ -8,8 +8,8 @@ window.backend = (function () {
   };
   var TIMEOUT_IN_MS = 10000;
 
-  var xhrHandler = function (onLoad, onError, xhrObject, method, data, formData) {
-    xhrObject = xhrObject || new XMLHttpRequest();
+  var xhrHandler = function (onLoad, onError, method, url, formData) {
+    var xhrObject = new XMLHttpRequest();
     xhrObject.responseType = 'json';
     xhrObject.addEventListener('load', function () {
       if (xhrObject.status === StatusCode.OK) {
@@ -26,18 +26,15 @@ window.backend = (function () {
     });
 
     xhrObject.timeout = TIMEOUT_IN_MS; // 10s
-    xhrObject.open(method, data);
+    xhrObject.open(method, url);
 
-    if (method === 'POST') { // Заготовка для 2-й части задания
-      xhrObject.send(formData);
-    } else {
-      xhrObject.send();
-    }
+    xhrObject.send(formData);
+
   };
 
   return {
-    load: function (onLoad, onError, xhrLoad) {
-      xhrHandler(onLoad, onError, xhrLoad, 'GET', URL);
+    load: function (onLoad, onError) {
+      xhrHandler(onLoad, onError, 'GET', URL);
 
     }
     /* save: function (formData, onLoad, onError, xhrSave) {
