@@ -2,7 +2,7 @@
 
 window.backend = (function () {
   var URL = 'https://js.dump.academy/keksobooking/data';
-  // var DESTINATION = 'https://js.dump.academy/keksobooking/';
+  var DESTINATION = 'https://js.dump.academy/keksobooking/';
   var StatusCode = {
     OK: 200
   };
@@ -36,9 +36,9 @@ window.backend = (function () {
     load: function (onLoad, onError) {
       xhrHandler(onLoad, onError, 'GET', URL);
 
+    },
+    save: function (formData, onLoad, onError) {
+      xhrHandler(onLoad, onError, 'POST', DESTINATION, formData);
     }
-    /* save: function (formData, onLoad, onError, xhrSave) {
-      xhrHandler(onLoad, onError, xhrSave, 'POST', DESTINATION, formData);
-    }*/
   };
 })();

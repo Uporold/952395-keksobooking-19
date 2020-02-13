@@ -2,6 +2,9 @@
 (function () {
   var notice = document.querySelector('.notice');
   var adFormElementList = notice.querySelectorAll('.ad-form__element');
+  var adForm = notice.querySelector('.ad-form');
+  var ESC_KEY = 'Escape';
+  var ENTER_KEY = 'Enter';
 
   var controlAdForm = function (option) {
     for (var i = 0; i < adFormElementList.length; ++i) {
@@ -52,5 +55,101 @@
 
   roomNumber.addEventListener('change', function (evt) {
     getCapacityFromRoomsNumber(evt);
+  });
+
+  var saveHandler = function () {
+    adForm.reset();
+    successMessage();
+    window.map.deleteAllUserAds();
+    window.map.deactivateMap();
+  };
+
+  var successMessage = function () {
+    var successTemplate = document.querySelector('#success')
+      .content
+      .querySelector('.success');
+    var successElement = successTemplate.cloneNode(true);
+    document.addEventListener('click', onClickCloseSuccessMessage);
+    document.addEventListener('keydown', onEscCloseSuccessMessage);
+
+    return document.body.appendChild(successElement);
+  };
+
+  var errorMessage = function () {
+    var main = document.querySelector('main');
+
+    var errorTemplate = document.querySelector('#error')
+      .content
+      .querySelector('.error');
+    var errorElement = errorTemplate.cloneNode(true);
+    var errorButton = errorElement.querySelector('.error__button');
+    errorButton.addEventListener('click', onClickCloseErrorMessage);
+    document.addEventListener('click', onClickCloseErrorMessage);
+    document.addEventListener('keydown', onEscCloseErrorMessage);
+
+    return main.appendChild(errorElement);
+  };
+
+  var closeMessage = function (element) {
+    document.querySelector(element).remove();
+  };
+
+  var resetButton = adForm.querySelector('.ad-form__reset');
+
+  var clearForm = function () {
+    adForm.reset();
+    window.map.getPinMainCoordinates();
+  };
+
+  var onEnterClearForm = function (evt) {
+    if (evt.key === ENTER_KEY) {
+      evt.preventDefault();
+      clearForm();
+    }
+  };
+
+  var onMouseButtonClearForm = function (evt) {
+    if (evt.button === 0) {
+      evt.preventDefault();
+      clearForm();
+    }
+  };
+
+
+  resetButton.addEventListener('click', onMouseButtonClearForm);
+  resetButton.addEventListener('keydown', onEnterClearForm);
+
+
+  var onEscCloseSuccessMessage = function (evt) {
+    if (evt.key === ESC_KEY) {
+      closeMessage('.success');
+      document.removeEventListener('keydown', onEscCloseSuccessMessage);
+    }
+  };
+
+  var onClickCloseSuccessMessage = function (evt) {
+    if (evt.button === 0) {
+      closeMessage('.success');
+      document.removeEventListener('click', onClickCloseSuccessMessage);
+    }
+  };
+
+  var onEscCloseErrorMessage = function (evt) {
+    if (evt.key === ESC_KEY) {
+      closeMessage('.error');
+      document.removeEventListener('keydown', onEscCloseErrorMessage);
+    }
+  };
+
+  var onClickCloseErrorMessage = function (evt) {
+    if (evt.button === 0) {
+      closeMessage('.error');
+      document.removeEventListener('click', onClickCloseErrorMessage);
+    }
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(adForm), saveHandler, errorMessage);
+    evt.preventDefault();
   });
 })();
