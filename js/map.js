@@ -75,11 +75,10 @@
       window.controlAdForm(true);
     },
     deleteAllUserAds: function () {
-      var mapPins = document.querySelector('.map__pins');
       var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
       var userPinsCount = pins.length;
       for (var i = 0; i < userPinsCount; i++) {
-        mapPins.querySelectorAll('.map__pin')[1].remove();
+        pins[i].remove();
       }
       var card = document.querySelector('.map__card');
       if (card) {
