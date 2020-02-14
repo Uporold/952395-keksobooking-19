@@ -67,6 +67,23 @@
       window.backend.load(successHandler, errorHandler);
       window.controlAdForm(false);
       window.map.getPinMainCoordinates();
+    },
+    deactivateMap: function () {
+      window.map.activated = false;
+      mapMain.classList.add('map--faded');
+      adForm.classList.add('ad-form--disabled');
+      window.controlAdForm(true);
+    },
+    deleteAllUserAds: function () {
+      var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      var userPinsCount = pins.length;
+      for (var i = 0; i < userPinsCount; i++) {
+        pins[i].remove();
+      }
+      var card = document.querySelector('.map__card');
+      if (card) {
+        card.remove();
+      }
     }
   };
   var mapFiltersContainer = document.querySelector('.map__filters-container');
@@ -75,9 +92,9 @@
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < ads.length; i++) {
       fragment.appendChild(window.renderPin(ads[i], i));
-      data = ads;
     }
     document.querySelector('.map__pins').appendChild(fragment);
+    data = ads;
   };
 
   var renderCards = function (id) {
