@@ -82,8 +82,8 @@
       .content
       .querySelector('.error');
     var errorElement = errorTemplate.cloneNode(true);
-    window.errorButton = errorElement.querySelector('.error__button');
-    window.errorButton.addEventListener('click', onClickCloseErrorMessage);
+    var errorButton = errorElement.querySelector('.error__button');
+    errorButton.addEventListener('click', onClickCloseErrorMessage);
     document.addEventListener('click', onClickCloseErrorMessage);
     document.addEventListener('keydown', onEscCloseErrorMessage);
 
@@ -118,7 +118,7 @@
   resetButton.addEventListener('click', onMouseButtonClearForm);
   resetButton.addEventListener('keydown', onEnterClearForm);
 
-  var successMessageEvtListenerRemover = function () {
+  var removeSuccessMessageEvtListener = function () {
     document.removeEventListener('keydown', onEscCloseSuccessMessage);
     document.removeEventListener('click', onClickCloseSuccessMessage);
   };
@@ -126,33 +126,32 @@
   var onEscCloseSuccessMessage = function (evt) {
     if (evt.key === ESC_KEY) {
       closeMessage('.success');
-      successMessageEvtListenerRemover();
+      removeSuccessMessageEvtListener();
     }
   };
 
   var onClickCloseSuccessMessage = function (evt) {
     if (evt.button === 0) {
       closeMessage('.success');
-      successMessageEvtListenerRemover();
+      removeSuccessMessageEvtListener();
     }
   };
 
-  var errorMessageEvtListenerRemover = function () {
-    window.errorButton.removeEventListener('click', onClickCloseErrorMessage);
+  var removeErrorMessageEvtListener = function () {
     document.removeEventListener('click', onClickCloseErrorMessage);
     document.removeEventListener('keydown', onEscCloseErrorMessage);
   };
   var onEscCloseErrorMessage = function (evt) {
     if (evt.key === ESC_KEY) {
       closeMessage('.error');
-      errorMessageEvtListenerRemover();
+      removeErrorMessageEvtListener();
     }
   };
 
   var onClickCloseErrorMessage = function (evt) {
     if (evt.button === 0) {
       closeMessage('.error');
-      errorMessageEvtListenerRemover();
+      removeErrorMessageEvtListener();
     }
   };
 
