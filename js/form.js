@@ -6,14 +6,20 @@
   var ESC_KEY = 'Escape';
   var ENTER_KEY = 'Enter';
 
-  var controlAdForm = function (option) {
-    for (var i = 0; i < adFormElementList.length; ++i) {
-      var item = adFormElementList[i];
+  var mapFilters = document.querySelector('.map__filters');
+  var mapFilterList = mapFilters.querySelectorAll('*');
+
+  var controlForm = function (list, option) {
+    for (var i = 0; i < list.length; ++i) {
+      var item = list[i];
       item.disabled = option;
     }
   };
-  controlAdForm(true);
-  window.controlAdForm = controlAdForm;
+
+  controlForm(adFormElementList, true);
+  controlForm(mapFilterList, true);
+  window.controlForm = controlForm;
+
 
   var roomNumber = notice.querySelector('#room_number');
   var capacity = notice.querySelector('#capacity');
@@ -21,6 +27,7 @@
   var timeOut = notice.querySelector('#timeout');
   var price = notice.querySelector('#price');
   var type = notice.querySelector('#type');
+
 
   var checkTime = function (evt, time) {
     time.value = evt.target.value;
