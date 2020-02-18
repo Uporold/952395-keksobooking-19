@@ -6,7 +6,6 @@
 
   window.renderPin = function (ad, id) {
     var pinElement = mapPinTemplate.cloneNode(true);
-    window.pinElement = pinElement;
 
     pinElement.style = 'left: ' + ad.location.x + 'px; top: ' + ad.location.y + 'px';
     pinElement.querySelector('img').src = ad.author.avatar;

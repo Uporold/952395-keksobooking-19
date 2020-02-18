@@ -17,13 +17,10 @@
   var data = [];
 
   var deleteActivePin = function () {
-    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
     var pinActive = document.querySelector('.map__pin--active');
-    pins.forEach(function (elem) {
-      if (elem.contains(pinActive)) {
-        elem.classList.remove('map__pin--active');
-      }
-    });
+    if (pinActive) {
+      pinActive.classList.remove('map__pin--active');
+    }
   };
 
   window.map = {
@@ -125,10 +122,10 @@
     document.querySelector('.map__pins').appendChild(fragment);
   };
 
-  var getFiltered = function (array, f) {
+  var getFiltered = function (array, cb) {
     var filtered = [];
     for (var i = 0; i < array.length; i++) {
-      if (f(array[i])) {
+      if (cb(array[i])) {
         filtered.push(array[i]);
       }
       if (filtered.length >= 5) {
