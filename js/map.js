@@ -8,7 +8,20 @@
   var addressInput = document.querySelector('#address');
   var notice = document.querySelector('.notice');
   var adForm = notice.querySelector('.ad-form');
+  var adFormElementList = notice.querySelectorAll('.ad-form__element');
+
+  var mapFilters = document.querySelector('.map__filters');
+  var mapFilterList = mapFilters.querySelectorAll('*');
+
+  var filteredData = [];
   var data = [];
+
+  var deleteActivePin = function () {
+    var pinActive = document.querySelector('.map__pin--active');
+    if (pinActive) {
+      pinActive.classList.remove('map__pin--active');
+    }
+  };
 
   window.map = {
     mapMain: mapMain,
@@ -33,8 +46,11 @@
     },
 
     onPinShowCard: function (evt) {
+      var currentPin = evt.currentTarget;
       var adId = evt.target.dataset.id;
       renderCards(adId);
+      deleteActivePin();
+      currentPin.classList.add('map__pin--active');
     },
 
     onEnterOpenCard: function (evt) {
@@ -64,49 +80,93 @@
       window.map.activated = true;
       mapMain.classList.remove('map--faded');
       adForm.classList.remove('ad-form--disabled');
-      window.backend.load(successHandler, errorHandler);
-      window.controlAdForm(false);
+      window.backend.load(onSuccessLoadHandler, onErrorLoadHandler);
+      window.switchForm(adFormElementList, false);
+
       window.map.getPinMainCoordinates();
     },
     deactivateMap: function () {
       window.map.activated = false;
       mapMain.classList.add('map--faded');
       adForm.classList.add('ad-form--disabled');
-      window.controlAdForm(true);
+      window.switchForm(adFormElementList, true);
+      window.switchForm(mapFilterList, true);
     },
     deleteAllUserAds: function () {
       var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-      var userPinsCount = pins.length;
-      for (var i = 0; i < userPinsCount; i++) {
-        pins[i].remove();
-      }
-      var card = document.querySelector('.map__card');
-      if (card) {
-        card.remove();
-      }
+      var card = document.querySelectorAll('.map__card');
+
+      pins.forEach(function (pin) {
+        pin.remove();
+      });
+      card.forEach(function (popup) {
+        popup.remove();
+      });
     }
   };
   var mapFiltersContainer = document.querySelector('.map__filters-container');
 
-  var successHandler = function (ads) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < ads.length; i++) {
-      fragment.appendChild(window.renderPin(ads[i], i));
-    }
-    document.querySelector('.map__pins').appendChild(fragment);
+  var onSuccessLoadHandler = function (ads) {
     data = ads;
+    drawFilteredPins(ads);
+    window.switchForm(mapFilterList, false);
   };
+
+  var renderPins = function (ads) {
+    var fragment = document.createDocumentFragment();
+    ads.forEach(function (elem, index) {
+      fragment.appendChild(window.renderPin(elem, index));
+    });
+
+
+    document.querySelector('.map__pins').appendChild(fragment);
+  };
+
+  var getFiltered = function (array, cb) {
+    var filtered = [];
+    for (var i = 0; i < array.length; i++) {
+      if (cb(array[i])) {
+        filtered.push(array[i]);
+      }
+      if (filtered.length >= 5) {
+        break;
+      }
+    }
+    return filtered;
+  };
+
+  var filterByHousingType = function (ad) {
+    var housingType = document.querySelector('#housing-type').value;
+    if (housingType === 'any') {
+      return true;
+    }
+    return ad.offer.type === housingType;
+  };
+
+
+  var drawFilteredPins = function (ads) {
+    filteredData = getFiltered(ads, filterByHousingType);
+    window.map.deleteAllUserAds();
+    renderPins(filteredData);
+  };
+
+  var changeFilterHandler = function () {
+    window.debounce(drawFilteredPins.bind(null, data));
+  };
+
+  mapFilters.addEventListener('change', changeFilterHandler);
+
 
   var renderCards = function (id) {
     if (document.querySelector('.map__card')) {
       document.querySelector('.map__card').remove();
     }
     var cardsFragment = document.createDocumentFragment();
-    cardsFragment.appendChild(window.renderCard(data[id]));
+    cardsFragment.appendChild(window.renderCard(filteredData[id]));
     mapMain.insertBefore(cardsFragment, mapFiltersContainer);
   };
 
-  var errorHandler = function (errorMessage) {
+  var onErrorLoadHandler = function (errorMessage) {
     var node = document.createElement('div');
     node.style = 'z-index: 100; text-align: center; background-color: red; position: sticky; top: 0; font-size: 30px;';
     node.textContent = errorMessage;
@@ -121,5 +181,7 @@
 
   var closeCard = function () {
     document.querySelector('.map__card').remove();
+    deleteActivePin();
   };
+
 })();

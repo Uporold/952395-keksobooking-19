@@ -6,14 +6,20 @@
   var ESC_KEY = 'Escape';
   var ENTER_KEY = 'Enter';
 
-  var controlAdForm = function (option) {
-    for (var i = 0; i < adFormElementList.length; ++i) {
-      var item = adFormElementList[i];
+  var mapFilters = document.querySelector('.map__filters');
+  var mapFilterList = mapFilters.querySelectorAll('*');
+
+  var switchForm = function (list, option) {
+    for (var i = 0; i < list.length; ++i) {
+      var item = list[i];
       item.disabled = option;
     }
   };
-  controlAdForm(true);
-  window.controlAdForm = controlAdForm;
+
+  switchForm(adFormElementList, true);
+  switchForm(mapFilterList, true);
+  window.switchForm = switchForm;
+
 
   var roomNumber = notice.querySelector('#room_number');
   var capacity = notice.querySelector('#capacity');
@@ -21,6 +27,7 @@
   var timeOut = notice.querySelector('#timeout');
   var price = notice.querySelector('#price');
   var type = notice.querySelector('#type');
+
 
   var checkTime = function (evt, time) {
     time.value = evt.target.value;
@@ -59,12 +66,12 @@
 
   var saveHandler = function () {
     adForm.reset();
-    successMessage();
+    showSuccessMessage();
     window.map.deleteAllUserAds();
     window.map.deactivateMap();
   };
 
-  var successMessage = function () {
+  var showSuccessMessage = function () {
     var successTemplate = document.querySelector('#success')
       .content
       .querySelector('.success');
@@ -75,7 +82,7 @@
     return document.body.appendChild(successElement);
   };
 
-  var errorMessage = function () {
+  var showErrorMessage = function () {
     var main = document.querySelector('main');
 
     var errorTemplate = document.querySelector('#error')
@@ -156,7 +163,7 @@
   };
 
   adForm.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(adForm), saveHandler, errorMessage);
+    window.backend.save(new FormData(adForm), saveHandler, showErrorMessage);
     evt.preventDefault();
   });
 })();

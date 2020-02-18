@@ -12,7 +12,6 @@
     pinElement.querySelector('img').alt = ad.offer.title;
     pinElement.dataset.id = id;
     pinElement.querySelector('img').dataset.id = id;
-
     pinElement.addEventListener('click', window.map.onPinShowCard);
     pinElement.addEventListener('keydown', window.map.onEnterOpenCard);
 
