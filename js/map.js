@@ -124,22 +124,9 @@
     document.querySelector('.map__pins').appendChild(fragment);
   };
 
-  var getFiltered = function (array, cb) {
-    var filtered = [];
-    for (var i = 0; i < array.length; i++) {
-      if (cb(array[i])) {
-        filtered.push(array[i]);
-      }
-      if (filtered.length >= 5) {
-        break;
-      }
-    }
-    return filtered;
-  };
 
-  var filterByHousingPrice = function (ad) {
-    var housingPrice = document.querySelector('#housing-price').value;
-    switch (housingPrice) {
+  var filterByHousingPrice = function (ad, element) {
+    switch (element.value) {
       case 'low':
         return (ad.offer.price < MIN_PRICE);
       case 'middle':
@@ -151,30 +138,46 @@
     }
   };
 
-  var filtrationItem = function (element, key, item) {
-    return element.value === 'any' ? true : element.value === item.offer[key].toString();
-  };
 
-  var filterByFeatures = function (ad) {
-    var selectedFeatures = Array.from(document.querySelectorAll('.map__checkbox:checked')).map(function (checkbox) {
-      return checkbox.value;
-    });
+  var filterByFeatures = function (ad, selectedFeatures) {
     return selectedFeatures.every(function (featureElement) {
       return ad.offer.features.includes(featureElement);
     });
-
   };
 
-  var housingType = document.querySelector('#housing-type');
-  var housingRooms = document.querySelector('#housing-rooms');
-  var housingGuests = document.querySelector('#housing-guests');
+  var filtrationItem = function (key, item, element) {
+    return element.value === 'any' ? true : element.value === item.offer[key].toString();
+  };
+
+  var getFiltered = function (array, cb, element, isLast) {
+    var filtered = [];
+    var isAny = (Array.isArray(element) && !element.length) || element.value === 'any';
+    for (var i = 0; i < array.length; i++) {
+      if (cb(array[i], element)) {
+        filtered.push(array[i]);
+      }
+      if ((isLast || !isAny) && filtered.length >= 5) {
+        break;
+      }
+    }
+    return filtered;
+  };
+
+  var typeSelect = document.querySelector('#housing-type');
+  var priceSelect = document.querySelector('#housing-price');
+  var roomsSelect = document.querySelector('#housing-rooms');
+  var guestSelect = document.querySelector('#housing-guests');
 
   var drawFilteredPins = function (ads) {
-    filteredData = getFiltered(ads, filtrationItem.bind(null, housingType, 'type'));
-    filteredData = getFiltered(filteredData, filtrationItem.bind(null, housingRooms, 'rooms'));
-    filteredData = getFiltered(filteredData, filtrationItem.bind(null, housingGuests, 'guests'));
-    filteredData = getFiltered(filteredData, filterByHousingPrice);
-    filteredData = getFiltered(filteredData, filterByFeatures);
+    var selectedFeatures = Array.from(document.querySelectorAll('.map__checkbox:checked'))
+      .map(function (checkbox) {
+        return checkbox.value;
+      });
+    filteredData = getFiltered(ads, filtrationItem.bind(null, 'type'), typeSelect);
+    filteredData = getFiltered(filteredData, filtrationItem.bind(null, 'rooms'), roomsSelect);
+    filteredData = getFiltered(filteredData, filtrationItem.bind(null, 'guests'), guestSelect);
+    filteredData = getFiltered(filteredData, filterByHousingPrice, priceSelect);
+    filteredData = getFiltered(filteredData, filterByFeatures, selectedFeatures, true);
     window.map.deleteAllUserAds();
     renderPins(filteredData);
   };
