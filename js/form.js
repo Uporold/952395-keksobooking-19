@@ -27,8 +27,6 @@
   var timeOut = notice.querySelector('#timeout');
   var price = notice.querySelector('#price');
   var type = notice.querySelector('#type');
-
-
   var checkTime = function (evt, time) {
     time.value = evt.target.value;
   };
@@ -38,6 +36,7 @@
     price.placeholder = minPrice[evt.target.value];
     price.min = minPrice[evt.target.value];
   };
+
 
   timeIn.addEventListener('change', function (evt) {
     checkTime(evt, timeOut);
@@ -49,6 +48,7 @@
 
   type.addEventListener('change', function (evt) {
     getMinPriceOfType(evt);
+
   });
 
   var getCapacityFromRoomsNumber = function (evt) {
@@ -161,6 +161,7 @@
       removeErrorMessageEvtListener();
     }
   };
+
 
   adForm.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(adForm), saveHandler, showErrorMessage);

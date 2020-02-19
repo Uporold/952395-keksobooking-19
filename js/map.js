@@ -137,14 +137,6 @@
     return filtered;
   };
 
-  var filterByHousingType = function (ad) {
-    var housingType = document.querySelector('#housing-type').value;
-    if (housingType === 'any') {
-      return true;
-    }
-    return ad.offer.type === housingType;
-  };
-
   var filterByHousingPrice = function (ad) {
     var housingPrice = document.querySelector('#housing-price').value;
     switch (housingPrice) {
@@ -159,19 +151,8 @@
     }
   };
 
-  var filterByHousingRooms = function (ad) {
-    var housingRooms = document.querySelector('#housing-rooms').value;
-    if (housingRooms === 'any') {
-      return true;
-    }
-    return ad.offer.rooms === Number(housingRooms);
-  };
-  var filterByHousingGuests = function (ad) {
-    var housingGuests = document.querySelector('#housing-guests').value;
-    if (housingGuests === 'any') {
-      return true;
-    }
-    return ad.offer.guests === Number(housingGuests);
+  var filtrationItem = function (element, key, item) {
+    return element.value === 'any' ? true : element.value === item.offer[key].toString();
   };
 
   var filterByFeatures = function (ad) {
@@ -184,11 +165,15 @@
 
   };
 
+  var housingType = document.querySelector('#housing-type');
+  var housingRooms = document.querySelector('#housing-rooms');
+  var housingGuests = document.querySelector('#housing-guests');
+
   var drawFilteredPins = function (ads) {
-    filteredData = getFiltered(ads, filterByHousingType);
+    filteredData = getFiltered(ads, filtrationItem.bind(null, housingType, 'type'));
+    filteredData = getFiltered(filteredData, filtrationItem.bind(null, housingRooms, 'rooms'));
+    filteredData = getFiltered(filteredData, filtrationItem.bind(null, housingGuests, 'guests'));
     filteredData = getFiltered(filteredData, filterByHousingPrice);
-    filteredData = getFiltered(filteredData, filterByHousingRooms);
-    filteredData = getFiltered(filteredData, filterByHousingGuests);
     filteredData = getFiltered(filteredData, filterByFeatures);
     window.map.deleteAllUserAds();
     renderPins(filteredData);
