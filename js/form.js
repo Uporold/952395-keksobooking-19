@@ -163,8 +163,29 @@
   };
 
 
+  var titleInput = adForm.querySelector('#title');
+  var priceInput = adForm.querySelector('#price');
+
+  var validate = function (input) {
+    if (input.value === '') {
+      input.style.border = '2px solid red';
+      return false;
+    } else if (input.value) {
+      input.style.border = '1px solid #d9d9d3';
+    }
+    return true;
+  };
+
+  var validateFields = function () {
+    var titleValidation = validate(titleInput);
+    var priceValidation = validate(priceInput);
+    return titleValidation && priceValidation;
+  };
+
   adForm.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(adForm), saveHandler, showErrorMessage);
     evt.preventDefault();
+    if (validateFields()) {
+      window.backend.save(new FormData(adForm), saveHandler, showErrorMessage);
+    }
   });
 })();

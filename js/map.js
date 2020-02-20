@@ -2,8 +2,6 @@
 (function () {
   var ESC_KEY = 'Escape';
   var ENTER_KEY = 'Enter';
-  var MIN_PRICE = 10000;
-  var MAX_PRICE = 50000;
 
   var mapMain = document.querySelector('.map');
   var mapPinMain = mapMain.querySelector('.map__pin--main');
@@ -124,45 +122,6 @@
     document.querySelector('.map__pins').appendChild(fragment);
   };
 
-
-  var filterByHousingPrice = function (ad, element) {
-    switch (element.value) {
-      case 'low':
-        return (ad.offer.price < MIN_PRICE);
-      case 'middle':
-        return (ad.offer.price <= MAX_PRICE && ad.offer.price >= MIN_PRICE);
-      case 'high':
-        return (ad.offer.price >= MAX_PRICE);
-      default:
-        return true;
-    }
-  };
-
-
-  var filterByFeatures = function (ad, selectedFeatures) {
-    return selectedFeatures.every(function (featureElement) {
-      return ad.offer.features.includes(featureElement);
-    });
-  };
-
-  var filtrationItem = function (key, item, element) {
-    return element.value === 'any' ? true : element.value === item.offer[key].toString();
-  };
-
-  var getFiltered = function (array, cb, element, isLast) {
-    var filtered = [];
-    var isAny = (Array.isArray(element) && !element.length) || element.value === 'any';
-    for (var i = 0; i < array.length; i++) {
-      if (cb(array[i], element)) {
-        filtered.push(array[i]);
-      }
-      if ((isLast || !isAny) && filtered.length >= 5) {
-        break;
-      }
-    }
-    return filtered;
-  };
-
   var typeSelect = document.querySelector('#housing-type');
   var priceSelect = document.querySelector('#housing-price');
   var roomsSelect = document.querySelector('#housing-rooms');
@@ -173,11 +132,11 @@
       .map(function (checkbox) {
         return checkbox.value;
       });
-    filteredData = getFiltered(ads, filtrationItem.bind(null, 'type'), typeSelect);
-    filteredData = getFiltered(filteredData, filtrationItem.bind(null, 'rooms'), roomsSelect);
-    filteredData = getFiltered(filteredData, filtrationItem.bind(null, 'guests'), guestSelect);
-    filteredData = getFiltered(filteredData, filterByHousingPrice, priceSelect);
-    filteredData = getFiltered(filteredData, filterByFeatures, selectedFeatures, true);
+    filteredData = window.filter.getFiltered(ads, window.filter.filtrationItem.bind(null, 'type'), typeSelect);
+    filteredData = window.filter.getFiltered(filteredData, window.filter.filtrationItem.bind(null, 'rooms'), roomsSelect);
+    filteredData = window.filter.getFiltered(filteredData, window.filter.filtrationItem.bind(null, 'guests'), guestSelect);
+    filteredData = window.filter.getFiltered(filteredData, window.filter.filterByHousingPrice, priceSelect);
+    filteredData = window.filter.getFiltered(filteredData, window.filter.filterByFeatures, selectedFeatures).slice(0, 5);
     window.map.deleteAllUserAds();
     renderPins(filteredData);
   };
