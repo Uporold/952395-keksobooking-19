@@ -33,7 +33,7 @@
       if (cb(array[i], element)) {
         filtered.push(array[i]);
       }
-      if ((!isAny) && filtered.length >= 5) {
+      if (!isAny && filtered.length >= 5) {
         break;
       }
     }

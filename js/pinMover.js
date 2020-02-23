@@ -17,9 +17,9 @@
 
 
   var Coordinate = function (x, y, constraints) {
-    this.x = x;
-    this.y = y;
     this._constraints = constraints;
+    this.setX(x);
+    this.setY(y);
   };
 
   Coordinate.prototype.setX = function (x) {
@@ -41,22 +41,16 @@
       window.map.activateMap();
     }
     var area = new Rect(limits.left, limits.top, limits.right, limits.bottom);
-    var startCoords = new Coordinate(evt.clientX, evt.clientY);
+    var startCoords = new Coordinate(evt.clientX, evt.clientY, area);
     var onMouseMove = function (moveEvt) {
 
-      var shift = new Coordinate(startCoords.x - moveEvt.clientX, startCoords.y - moveEvt.clientY /* , area*/);
-      startCoords = new Coordinate(moveEvt.clientX, moveEvt.clientY);
+      var shift = {x: startCoords.x - moveEvt.clientX, y: startCoords.y - moveEvt.clientY};
 
-      var mapPinTop = window.map.mapPinMain.offsetTop - shift.y;
-      var mapPinLeft = window.map.mapPinMain.offsetLeft - shift.x;
+      startCoords = new Coordinate(moveEvt.clientX, moveEvt.clientY, area);
 
-      if (mapPinTop >= area.top && mapPinTop <= area.bottom) {
-        window.map.mapPinMain.style.top = mapPinTop + 'px';
-      }
-
-      if (mapPinLeft >= area.left && mapPinLeft <= area.right) {
-        window.map.mapPinMain.style.left = mapPinLeft + 'px';
-      }
+      var mapCoords = new Coordinate(window.map.mapPinMain.offsetLeft - shift.x, window.map.mapPinMain.offsetTop - shift.y, area);
+      window.map.mapPinMain.style.left = mapCoords.x + 'px';
+      window.map.mapPinMain.style.top = mapCoords.y + 'px';
 
 
       window.map.getPinMainCoordinates();
@@ -70,4 +64,6 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+
 })();
