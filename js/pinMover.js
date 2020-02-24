@@ -41,12 +41,12 @@
       window.map.activateMap();
     }
     var area = new Rect(limits.left, limits.top, limits.right, limits.bottom);
-    var startCoords = new Coordinate(evt.clientX, evt.clientY, area);
+    var startCoords = new Coordinate(evt.clientX, evt.clientY, new Rect(0, 0, evt.clientX, evt.clientY));
     var onMouseMove = function (moveEvt) {
 
       var shift = {x: startCoords.x - moveEvt.clientX, y: startCoords.y - moveEvt.clientY};
 
-      startCoords = new Coordinate(moveEvt.clientX, moveEvt.clientY, area);
+      startCoords = new Coordinate(moveEvt.clientX, moveEvt.clientY, new Rect(0, 0, moveEvt.clientX, moveEvt.clientY));
 
       var mapCoords = new Coordinate(window.map.mapPinMain.offsetLeft - shift.x, window.map.mapPinMain.offsetTop - shift.y, area);
       window.map.mapPinMain.style.left = mapCoords.x + 'px';

@@ -13,6 +13,8 @@
   var titleInput = adForm.querySelector('#title');
   var priceInput = adForm.querySelector('#price');
 
+  var resetButton = adForm.querySelector('.ad-form__reset');
+
   var roomNumber = notice.querySelector('#room_number');
   var capacity = notice.querySelector('#capacity');
   var timeIn = notice.querySelector('#timein');
@@ -106,8 +108,6 @@
   var closeMessage = function (element) {
     document.querySelector(element).remove();
   };
-
-  var resetButton = adForm.querySelector('.ad-form__reset');
 
   var clearForm = function () {
     adForm.reset();
