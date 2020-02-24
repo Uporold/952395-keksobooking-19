@@ -1,11 +1,14 @@
 'use strict';
 (function () {
+  var TOP_LIMIT = 130;
+  var BOTTOM_LIMIT = 630;
+  var LEFT_LIMIT = 0;
 
   var limits = {
-    top: 130 - window.map.pinAfter.height - window.map.pin.height,
+    top: TOP_LIMIT - window.map.pinAfter.height - window.map.pin.height,
     right: window.map.mapMain.offsetWidth - window.map.mapPinMain.offsetWidth / 2,
-    bottom: 630 - window.map.pinAfter.height - window.map.pin.height,
-    left: 0 - window.map.mapPinMain.offsetWidth / 2
+    bottom: BOTTOM_LIMIT - window.map.pinAfter.height - window.map.pin.height,
+    left: LEFT_LIMIT - window.map.mapPinMain.offsetWidth / 2
   };
 
   var Rect = function (left, top, right, bottom) {
@@ -41,12 +44,12 @@
       window.map.activateMap();
     }
     var area = new Rect(limits.left, limits.top, limits.right, limits.bottom);
-    var startCoords = new Coordinate(evt.clientX, evt.clientY, new Rect(0, 0, evt.clientX, evt.clientY));
+    var startCoords = {x: evt.clientX, y: evt.clientY};
     var onMouseMove = function (moveEvt) {
 
       var shift = {x: startCoords.x - moveEvt.clientX, y: startCoords.y - moveEvt.clientY};
 
-      startCoords = new Coordinate(moveEvt.clientX, moveEvt.clientY, new Rect(0, 0, moveEvt.clientX, moveEvt.clientY));
+      startCoords = {x: moveEvt.clientX, y: moveEvt.clientY};
 
       var mapCoords = new Coordinate(window.map.mapPinMain.offsetLeft - shift.x, window.map.mapPinMain.offsetTop - shift.y, area);
       window.map.mapPinMain.style.left = mapCoords.x + 'px';
