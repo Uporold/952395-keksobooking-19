@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
   var mapPinTemplate = document.querySelector('#pin')
     .content

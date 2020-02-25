@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
   var TOP_LIMIT = 130;
   var BOTTOM_LIMIT = 630;

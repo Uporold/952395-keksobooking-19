@@ -4,15 +4,15 @@
   var ENTER_KEY = 'Enter';
 
   var mapFilters = document.querySelector('.map__filters');
+  var mapFeaturesList = mapFilters.querySelectorAll('.map__checkbox');
   var mapFilterList = mapFilters.querySelectorAll('*');
+
   var notice = document.querySelector('.notice');
   var adFormElementList = notice.querySelectorAll('.ad-form__element');
   var adForm = notice.querySelector('.ad-form');
-  var mapFeatures = mapFilters.querySelectorAll('.map__checkbox');
-  var formFeatures = adForm.querySelectorAll('.feature__checkbox');
+  var formFeaturesList = adForm.querySelectorAll('.feature__checkbox');
   var titleInput = adForm.querySelector('#title');
   var priceInput = adForm.querySelector('#price');
-
   var resetButton = adForm.querySelector('.ad-form__reset');
 
   var roomNumber = notice.querySelector('#room_number');
@@ -23,10 +23,9 @@
   var type = notice.querySelector('#type');
 
   var switchForm = function (list, option) {
-    for (var i = 0; i < list.length; ++i) {
-      var item = list[i];
+    list.forEach(function (item) {
       item.disabled = option;
-    }
+    });
   };
 
   switchForm(adFormElementList, true);
@@ -118,6 +117,8 @@
     price.min = 0;
     window.map.deactivateMap();
     window.map.deleteAllUserAds();
+    titleInput.style.border = '1px solid #d9d9d3';
+    priceInput.style.border = '1px solid #d9d9d3';
   };
 
   var onEnterClearForm = function (evt) {
@@ -186,8 +187,8 @@
       checkbox.addEventListener('keydown', checkboxCheck);
     });
   };
-  checkFeatures(mapFeatures);
-  checkFeatures(formFeatures);
+  checkFeatures(mapFeaturesList);
+  checkFeatures(formFeaturesList);
 
   var validate = function (input) {
     if (input.value === '') {
