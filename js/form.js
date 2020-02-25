@@ -1,13 +1,26 @@
 'use strict';
 (function () {
-  var notice = document.querySelector('.notice');
-  var adFormElementList = notice.querySelectorAll('.ad-form__element');
-  var adForm = notice.querySelector('.ad-form');
   var ESC_KEY = 'Escape';
   var ENTER_KEY = 'Enter';
 
   var mapFilters = document.querySelector('.map__filters');
   var mapFilterList = mapFilters.querySelectorAll('*');
+  var notice = document.querySelector('.notice');
+  var adFormElementList = notice.querySelectorAll('.ad-form__element');
+  var adForm = notice.querySelector('.ad-form');
+  var mapFeatures = mapFilters.querySelectorAll('.map__checkbox');
+  var formFeatures = adForm.querySelectorAll('.feature__checkbox');
+  var titleInput = adForm.querySelector('#title');
+  var priceInput = adForm.querySelector('#price');
+
+  var resetButton = adForm.querySelector('.ad-form__reset');
+
+  var roomNumber = notice.querySelector('#room_number');
+  var capacity = notice.querySelector('#capacity');
+  var timeIn = notice.querySelector('#timein');
+  var timeOut = notice.querySelector('#timeout');
+  var price = notice.querySelector('#price');
+  var type = notice.querySelector('#type');
 
   var switchForm = function (list, option) {
     for (var i = 0; i < list.length; ++i) {
@@ -18,15 +31,10 @@
 
   switchForm(adFormElementList, true);
   switchForm(mapFilterList, true);
+  document.querySelector('#avatar').disabled = true;
+  document.querySelector('#images').disabled = true;
   window.switchForm = switchForm;
 
-
-  var roomNumber = notice.querySelector('#room_number');
-  var capacity = notice.querySelector('#capacity');
-  var timeIn = notice.querySelector('#timein');
-  var timeOut = notice.querySelector('#timeout');
-  var price = notice.querySelector('#price');
-  var type = notice.querySelector('#type');
   var checkTime = function (evt, time) {
     time.value = evt.target.value;
   };
@@ -65,7 +73,7 @@
   });
 
   var saveHandler = function () {
-    adForm.reset();
+    clearForm();
     showSuccessMessage();
     window.map.deleteAllUserAds();
     window.map.deactivateMap();
@@ -101,11 +109,15 @@
     document.querySelector(element).remove();
   };
 
-  var resetButton = adForm.querySelector('.ad-form__reset');
-
   var clearForm = function () {
     adForm.reset();
-    window.map.getPinMainCoordinates();
+    document.querySelector('.user-pic').src = 'img/muffin-grey.svg';
+    document.querySelector('.house-pic').src = 'img/muffin-grey.svg';
+    window.map.clearFilters();
+    price.placeholder = 0;
+    price.min = 0;
+    window.map.deactivateMap();
+    window.map.deleteAllUserAds();
   };
 
   var onEnterClearForm = function (evt) {
@@ -162,9 +174,41 @@
     }
   };
 
+  var checkboxCheck = function (evt) {
+    if (evt.key === ENTER_KEY) {
+      evt.preventDefault();
+      evt.currentTarget.click();
+    }
+  };
+
+  var checkFeatures = function (checkboxes) {
+    checkboxes.forEach(function (checkbox) {
+      checkbox.addEventListener('keydown', checkboxCheck);
+    });
+  };
+  checkFeatures(mapFeatures);
+  checkFeatures(formFeatures);
+
+  var validate = function (input) {
+    if (input.value === '') {
+      input.style.border = '2px solid red';
+      return false;
+    } else if (input.value) {
+      input.style.border = '1px solid #d9d9d3';
+    }
+    return true;
+  };
+
+  var validateFields = function () {
+    var titleValidation = validate(titleInput);
+    var priceValidation = validate(priceInput);
+    return titleValidation && priceValidation;
+  };
 
   adForm.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(adForm), saveHandler, showErrorMessage);
     evt.preventDefault();
+    if (validateFields()) {
+      window.backend.save(new FormData(adForm), saveHandler, showErrorMessage);
+    }
   });
 })();
