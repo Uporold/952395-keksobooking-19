@@ -42,7 +42,7 @@
 
     }
     element.querySelector('.popup__features').appendChild(featuresFragment);
-    if (features.length === 0) {
+    if (!features.length) {
       element.querySelector('.popup__features').remove();
     }
   };
@@ -62,7 +62,7 @@
       photosFragment.appendChild(newPhoto);
     }
     element.querySelector('.popup__photos').appendChild(photosFragment);
-    if (photos.length === 0) {
+    if (!photos.length) {
       element.querySelector('.popup__photos').remove();
     }
   };

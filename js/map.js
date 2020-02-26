@@ -182,6 +182,7 @@
   });
 
   var closeCard = function () {
+    document.removeEventListener('keydown', window.map.onEscCloseCard);
     document.querySelector('.map__card').remove();
     deleteActivePin();
   };
